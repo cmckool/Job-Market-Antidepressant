@@ -396,4 +396,6 @@ st.markdown(
 - The occupation analysis depends on how occupations are coded and classified over time.
 - The antidepressant analysis focuses only on selected SSRI drugs: fluoxetine, sertraline, escitalopram, citalopram, and paroxetine.
 """
+)
+
 
