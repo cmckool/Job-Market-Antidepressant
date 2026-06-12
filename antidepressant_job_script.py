@@ -378,3 +378,22 @@ with tab3:
     st.write("Correlation summary by gender:")
     st.dataframe(corr_df, use_container_width=True)
 
+
+
+
+
+# -------------------------------------------------------
+# Limitations
+# -------------------------------------------------------
+
+st.subheader("Limitations")
+
+st.markdown(
+    """
+- This analysis shows **relationships and trends**, not causation.
+- NHANES data is organized by survey cycles, not every single year.
+- The BLS unemployment comparison uses ages **20–34**, while the antidepressant analysis uses ages **20–35**.
+- The occupation analysis depends on how occupations are coded and classified over time.
+- The antidepressant analysis focuses only on selected SSRI drugs: fluoxetine, sertraline, escitalopram, citalopram, and paroxetine.
+"""
+
