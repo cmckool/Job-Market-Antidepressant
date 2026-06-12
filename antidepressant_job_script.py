@@ -17,7 +17,7 @@ st.set_page_config(
 # File paths
 # -------------------------------------------------------
 
-DATA_DIR = Path(".")
+DATA_DIR = Path("antidepressant_Job_project/final_project_data")
 
 FINAL_DATA_PATH = DATA_DIR / "final_antidepressant_job_occupation_dataset.csv"
 CHANGE_SUMMARY_PATH = DATA_DIR / "change_summary_by_gender.csv"
@@ -121,55 +121,80 @@ with col4:
     avg_unemployment = filtered_df["approx_unemployment_rate_20_34"].mean()
     st.metric("Avg Unemployment Rate", f"{avg_unemployment:.2f}%")
 
+
+
 # -------------------------------------------------------
-# Trend charts
+# Main dashboard graphs
 # -------------------------------------------------------
 
-st.subheader("Trends Over Time")
+st.subheader("1. Antidepressant Use Over Time by Gender")
 
-metric_choice = st.selectbox(
-    "Choose a metric to view",
-    [
-        "percent_using_target_antidepressant",
-        "approx_unemployment_rate_20_34",
-        "percent_in_nontraditional_jobs"
-    ],
-    format_func=lambda x: {
-        "percent_using_target_antidepressant": "Antidepressant Use %",
-        "approx_unemployment_rate_20_34": "Unemployment Rate %",
-        "percent_in_nontraditional_jobs": "Nontraditional Jobs %"
-    }[x]
-)
-
-metric_titles = {
-    "percent_using_target_antidepressant": "Antidepressant Use Among Ages 20–35",
-    "approx_unemployment_rate_20_34": "Approximate Unemployment Rate Ages 20–34",
-    "percent_in_nontraditional_jobs": "Workers Ages 20–35 in Nontraditional Gender Occupations"
-}
-
-fig_trend = px.line(
+fig_antidepressant = px.line(
     filtered_df,
     x="match_year",
-    y=metric_choice,
+    y="percent_using_target_antidepressant",
     color="gender",
     markers=True,
     hover_data=["cycle"],
-    title=metric_titles[metric_choice]
+    title="Selected Antidepressant Use Among Adults Ages 20–35 by Gender"
 )
 
-fig_trend.update_layout(
+fig_antidepressant.update_layout(
     xaxis_title="Year",
-    yaxis_title="Percent",
+    yaxis_title="Percent Using Selected Antidepressants",
     legend_title="Gender"
 )
 
-st.plotly_chart(fig_trend, use_container_width=True)
+st.plotly_chart(fig_antidepressant, use_container_width=True)
+
+
+st.subheader("2. Unemployment Rate Over Time by Gender")
+
+fig_unemployment = px.line(
+    filtered_df,
+    x="match_year",
+    y="approx_unemployment_rate_20_34",
+    color="gender",
+    markers=True,
+    hover_data=["cycle"],
+    title="Approximate Unemployment Rate Ages 20–34 by Gender"
+)
+
+fig_unemployment.update_layout(
+    xaxis_title="Year",
+    yaxis_title="Unemployment Rate (%)",
+    legend_title="Gender"
+)
+
+st.plotly_chart(fig_unemployment, use_container_width=True)
+
+
+st.subheader("3. Nontraditional Gender Occupation Participation Over Time")
+
+fig_jobs = px.line(
+    filtered_df,
+    x="match_year",
+    y="percent_in_nontraditional_jobs",
+    color="gender",
+    markers=True,
+    hover_data=["cycle"],
+    title="Workers Ages 20–35 in Nontraditional Gender Occupations"
+)
+
+fig_jobs.update_layout(
+    xaxis_title="Year",
+    yaxis_title="Percent in Nontraditional Gender Occupations",
+    legend_title="Gender"
+)
+
+st.plotly_chart(fig_jobs, use_container_width=True)
+
 
 # -------------------------------------------------------
-# Three-metric trend by gender
+# Three metric trend by gender
 # -------------------------------------------------------
 
-st.subheader("Three-Metric Trend by Gender")
+st.subheader("4. Three-Metric Trend by Gender")
 
 gender_single = st.selectbox(
     "Select one gender for combined trend view",
@@ -216,11 +241,12 @@ fig_three.update_layout(
 
 st.plotly_chart(fig_three, use_container_width=True)
 
+
 # -------------------------------------------------------
-# Scatter plots
+# Relationship charts
 # -------------------------------------------------------
 
-st.subheader("Relationship Charts")
+st.subheader("5. Relationship Charts")
 
 col1, col2 = st.columns(2)
 
@@ -231,13 +257,18 @@ with col1:
         y="percent_using_target_antidepressant",
         color="gender",
         text="cycle",
-        title="Antidepressant Use vs Unemployment",
-        hover_data=["match_year"]
+        hover_data=["match_year"],
+        title="Antidepressant Use vs Unemployment Rate"
+    )
+
+    fig_scatter_unemployment.update_traces(
+        textposition="top center"
     )
 
     fig_scatter_unemployment.update_layout(
         xaxis_title="Unemployment Rate Ages 20–34 (%)",
-        yaxis_title="Antidepressant Use Ages 20–35 (%)"
+        yaxis_title="Antidepressant Use Ages 20–35 (%)",
+        legend_title="Gender"
     )
 
     st.plotly_chart(fig_scatter_unemployment, use_container_width=True)
@@ -249,16 +280,68 @@ with col2:
         y="percent_using_target_antidepressant",
         color="gender",
         text="cycle",
-        title="Antidepressant Use vs Nontraditional Jobs",
-        hover_data=["match_year"]
+        hover_data=["match_year"],
+        title="Antidepressant Use vs Nontraditional Job Participation"
+    )
+
+    fig_scatter_jobs.update_traces(
+        textposition="top center"
     )
 
     fig_scatter_jobs.update_layout(
-        xaxis_title="Nontraditional Jobs (%)",
-        yaxis_title="Antidepressant Use Ages 20–35 (%)"
+        xaxis_title="Nontraditional Gender Occupations (%)",
+        yaxis_title="Antidepressant Use Ages 20–35 (%)",
+        legend_title="Gender"
     )
 
     st.plotly_chart(fig_scatter_jobs, use_container_width=True)
+
+
+# -------------------------------------------------------
+# Optional metric selector for exploration
+# -------------------------------------------------------
+
+st.subheader("6. Explore Any Metric")
+
+metric_choice = st.selectbox(
+    "Choose a metric to explore",
+    [
+        "percent_using_target_antidepressant",
+        "approx_unemployment_rate_20_34",
+        "percent_in_nontraditional_jobs"
+    ],
+    format_func=lambda x: {
+        "percent_using_target_antidepressant": "Antidepressant Use %",
+        "approx_unemployment_rate_20_34": "Unemployment Rate %",
+        "percent_in_nontraditional_jobs": "Nontraditional Jobs %"
+    }[x]
+)
+
+metric_titles = {
+    "percent_using_target_antidepressant": "Antidepressant Use Among Ages 20–35",
+    "approx_unemployment_rate_20_34": "Approximate Unemployment Rate Ages 20–34",
+    "percent_in_nontraditional_jobs": "Workers Ages 20–35 in Nontraditional Gender Occupations"
+}
+
+fig_metric = px.line(
+    filtered_df,
+    x="match_year",
+    y=metric_choice,
+    color="gender",
+    markers=True,
+    hover_data=["cycle"],
+    title=metric_titles[metric_choice]
+)
+
+fig_metric.update_layout(
+    xaxis_title="Year",
+    yaxis_title="Percent",
+    legend_title="Gender"
+)
+
+st.plotly_chart(fig_metric, use_container_width=True)
+
+
 
 # -------------------------------------------------------
 # Summary tables
@@ -295,18 +378,3 @@ with tab3:
     st.write("Correlation summary by gender:")
     st.dataframe(corr_df, use_container_width=True)
 
-# -------------------------------------------------------
-# Limitations
-# -------------------------------------------------------
-
-st.subheader("Limitations")
-
-st.markdown(
-    """
-- This analysis shows **relationships and trends**, not causation.
-- NHANES data is organized by survey cycles, not every single year.
-- The BLS unemployment comparison uses ages **20–34**, while the antidepressant analysis uses ages **20–35**.
-- The occupation analysis depends on how occupations are coded and classified over time.
-- The antidepressant analysis focuses only on selected SSRI drugs: fluoxetine, sertraline, escitalopram, citalopram, and paroxetine.
-"""
-)
