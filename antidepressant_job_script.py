@@ -17,7 +17,7 @@ st.set_page_config(
 # File paths
 # -------------------------------------------------------
 
-DATA_DIR = Path("antidepressant_Job_project/final_project_data")
+DATA_DIR = Path(".")
 
 FINAL_DATA_PATH = DATA_DIR / "final_antidepressant_job_occupation_dataset.csv"
 CHANGE_SUMMARY_PATH = DATA_DIR / "change_summary_by_gender.csv"
